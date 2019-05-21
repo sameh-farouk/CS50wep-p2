@@ -25,11 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let userName = null;
   let logedIn = false;
   let currentRoom = null;
-  let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port,
-    {
-      query: {
-      }
-    });
+  let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
 
   function addUser(username) {
@@ -37,11 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.emit('authentication request', username);
   }
 
+
   function send(msg) {
     if (logedIn) {
       socket.send({ message: msg, sender: userName });
     }
   }
+
 
   function notify_user(msg) {
     const li = document.createElement('li');
@@ -50,11 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     $msgBox.insertBefore(li, $msgBox.firstChild);
   }
 
+
   function add_message(msg) {
     let li = document.createElement('li');
     let p = document.createElement('p');
     p.innerHTML = `<small>${now()}</small> <strong>${msg.sender}</strong> : ${msg.message}`;
-
     if (msg.file) {
       let a = document.createElement('a');
       a.setAttribute('href', msg.file)
@@ -63,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
       a.textContent = " Open this File (only if you trust it)";
       p.appendChild(a)
     }
-
     li.appendChild(p)
     if (msg.sender !== userName) {
       li.style = 'color: blue;'
@@ -71,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     $msgBox.insertBefore(li, $msgBox.firstChild);
   }
 
+
   function refresh_rooms(current = currentRoom, rooms) {
-    console.log(rooms)
     $cards.innerHTML = '';
     for (room in rooms) {
       const button = document.createElement('button');
@@ -95,17 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
   function FileChosen(event) {
     selectedFile = event.target.files[0];
-    console.log(selectedFile)
     let name = selectedFile.name
     FReader = new FileReader();
     FReader.onload = function (evnt) {
       socket.emit('upload', { 'name': name, 'data': evnt.target.result, 'size': selectedFile.size, 'type': selectedFile.type });
     }
     FReader.readAsArrayBuffer(selectedFile);
-
   }
+
+
   // Keyboard events
   $usernameInput.addEventListener('keypress', (event) => {
     if (event.keyCode == 13) {
@@ -144,42 +142,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // on file selected change
   $uploadInput.addEventListener('change', FileChosen);
 
 
   // socket events
   socket.on('connect', () => {
-    socket.io.opts.query = {
-      token: 'fgh'
-    }
-    //socket.io.opts.transports = ['websocket'];
     console.log('connected, socket id is ' + socket.id);
   });
 
+
   socket.on('authentication required', () => {
-    console.log('server sent authentication required event');
-    //socket.io.opts.query = {
-    //  name: 'sameh'
-    //}
     $loginPage.style.display = 'block';
     $chatPage.style.display = 'none';
   });
 
+
   socket.on('loged in', (data) => {
     $loginPage.style.display = 'none';
     $chatPage.style.display = 'block';
-    console.log('loged in');
     userName = data.name;
     logedIn = true;
     $displayName.textContent = userName
-    // $roomName.textContent = data.current_room;
     document.querySelector('#status').classList.replace('text-warning', 'text-success');
     refresh_rooms(data.current_room, data.rooms);
-    // data.last100msg.forEach(msg => {
-    //   add_message(msg)
-    // });
     notify_user(`You've been logged in successfully, active users : ${data.active_users}`);
-  })
+  });
 
 
   socket.on('joined a room', (room) => {
@@ -188,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let active_button = document.querySelectorAll(`[data-room~="${room.current_room}"]`);
     if (active_button) {
       active_button.style = 'color: green;'
-      console.log(active_button)
     }
     $msgBox.innerHTML = ''
     notify_user(`you are now in ${room.current_room} room`)
@@ -196,34 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
       add_message(msg)
     });
     notify_user('all messages below have already been sent before you join this room now.')
-  })
+  });
 
 
   socket.on('message', (msg) => {
     add_message(msg)
   });
 
+
   socket.on('refresh rooms', (data) => {
     refresh_rooms(currentRoom, data.rooms)
   });
 
-  socket.on('connect_error', (error) => {
-    console.log('connection error: ' + error.message);
-  });
 
-  socket.on('reconnect_error', (error) => {
-    console.log('attempt to reconnect has failed! :' + error);
-  });
-
-
-  socket.on('reconnect_attempt', (count) => {
-    console.log('reconnecting .. ' + count);
-  });
-
-  socket.on('reconnect', (count) => {
-    console.log('you have been reconnected after ' + count + 'try. socket id is ' + socket.id);
-
-  });
   socket.on('disconnect', (reason) => {
     if (logedIn) {
       notify_user("You've been disconnected because " + reason + " !");
@@ -233,10 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     console.log('you have been disconnected because ' + reason);
   });
-
-
-
-
-
 
 });

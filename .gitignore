@@ -6,3 +6,4 @@ venv
 /application.pyc
 /package-lock.json
 flask_session
+uploads/*

@@ -36,12 +36,8 @@ def index():
 def connect():
 	print(session.sid)
 	if 'user' in session:
-		print('connect')
-		print("wellcome, back .. i'll check your credentials")
 		check(session['user'])
 	else:
-		print('connect')
-		print("i'll send auth request to the client")
 		emit('authentication required', 'hello')
 		
 
@@ -58,7 +54,6 @@ def pass_message(msg):
 			if len(history[session['current_room']]) >= 100:
 				history[session['current_room']].popleft()
 			history[session['current_room']].append(msg)
-			print(history[session['current_room']])
 		else:
 			# first message in this room.
 			# we will use deque collection to store messages so we can pop old message easy and fast
@@ -68,9 +63,7 @@ def pass_message(msg):
 @socketio.on('authentication request')
 def check(name):
 	if (name):
-		print('start checking the credentials')
-		# TO DO: check if this name currently in active users list
-		print("i'll accept it and log you in")
+		# TO DO: check if this name currently used
 		# we call a function to first save the username in the server side session,
 		# and to add user to online-users list, so we can track the number of online users
 		# if this function return false then user did not added as he is already online from other tab
@@ -79,18 +72,11 @@ def check(name):
 			# lets find a room to the user. we call a function that add new users to default room,
 			# and add old users to last room they was in.
 			switch_room()
-			# now build a list of last 100 message was sent in this room
-			if history.get(session['current_room']):
-				# we need to convert deque collection to list before send it to the client, deque not supported to send in json data
-				last100msg = list(history[session['current_room']])
-			else:
-				last100msg = []
 			# send a loged in event to the client, with a lot of useful info,
 			# number of online users,
 			# list of all rooms,
 			# user current room,
-			# last 100 message in current user room
-			emit('loged in', {'name': session['user'], 'active_users': len(active_users), 'rooms': chat_rooms, 'current_room': session['current_room'], 'last100msg': last100msg})
+			emit('loged in', {'name': session['user'], 'active_users': len(active_users), 'rooms': chat_rooms, 'current_room': session['current_room']})
 			print(f"loged in with name: {session['user']}")
 		else:
 			print('user have other active session')
@@ -113,7 +99,7 @@ def create_room(room):
 	if room['name'] and room['name'] not in chat_rooms:
 		chat_rooms.append(room['name'])
 		switch_room(room['name'])
-		# send all rooms and current user room to the client, so it can build rooms list and mark the room wich user already in
+		# send all rooms , so it can build rooms list 
 		socketio.emit('refresh rooms', {'rooms': chat_rooms}, broadcast=True)
 
 
@@ -124,7 +110,6 @@ def add_user(username):
 	# if user not in online-users list, add him to the list
 	if session.sid not in active_users:
 		active_users.update({session.sid: username})
-		print(f'added {username} to users\n users are {len(active_users)} ')
 		return True
 	# user is already loged in , this mean he try to open 2nd browser tab 
 	# if this behaviour  allowd , it will cause problem when user close one of the multible tabs,
@@ -132,7 +117,6 @@ def add_user(username):
 	else:
 		print('user already loged in')
 		return False
-	# user no 
 
 
 @socketio.on('switch room')
@@ -160,28 +144,31 @@ def switch_room(room=None):
 	else:
 		last100msg = []
 	emit('joined a room', {'current_room': room, 'last100msg': last100msg})
-	print('user joined room: ' + room)
 
 
 @socketio.on('upload')
 def upload(data):
+	# save the binary data to new file
+	# if the file already file will not save
+	# To DO : limit allowed file size , upload in chunks instead of whole file.
 	if data['data'] and data['name'] != '' and allowed_file(data['name']):
 		filename = secure_filename(data['name'])
 		with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "xb") as newFile:
 			newFile.write(data['data'])
-		print(data['name'])
-		print(data['size'])
-		print(data['type'])
+		# here we call function to pass a message contain file name in message body , sender name and file url
 		pass_message({'file': url_for('uploads',filename=filename), 'message': filename, 'sender': session['user']})
 	else:
-		print('not allowed')
+		print('invalid file or extension not allowed')
+
 
 @app.route('/uploads/<filename>')
 def uploads(filename):
+	# serving uploaded files 
 	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 def allowed_file(filename):
+	# check if the file extension in the server extensions white list
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
