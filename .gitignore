@@ -1,0 +1,8 @@
+node_modules
+__pycache__
+.idea
+.vscode
+venv
+/application.pyc
+/package-lock.json
+flask_session

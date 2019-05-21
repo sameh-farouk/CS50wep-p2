@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+	<title>Chit-Chat </title>
+	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+	<link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
+	<script src="{{ url_for('static', filename='index.js') }}"></script>
+</head>
+
+<body>
+		<div id='login_page' style='display: none;'>
+			<div>
+				<h3>What is Your Name?</h3>
+				<input id='name_input' type="text" maxlength="14">
+			</div>
+		</div>
+		<div id='chat_page' style='display: none;'>
+
+				<div class="jumbotron">
+					<h5 class="display-5">Hello, <span id="display_name"></span> !</h5>
+					<p class="lead">
+						<spna style="color:red">Chit-chat</spna> is online messaging service built with flask and
+						javascript.
+					</p>
+					<hr class="my-4">
+					<p>you can create channels(i.e. chatrooms) to communicates in.</p>
+					<a id="create_room" class="btn btn-success btn-lg" role="button">Create new channel</a>
+					<hr class="my-4">
+					<div id="cards" class="card-columns">
+					</div>
+					<hr class="my-4">
+
+					<div style="overflow-y: scroll; height:200px; border:1px solid black;">
+						<div class="container">
+							<h4 id="room_name">Channel Name</h4>
+							<div id="status" class="spinner-grow text-warning" role="status">
+								<span class="sr-only">Loading...</span>
+							</div>
+							<ul id='msg_Box'></ul>
+						</div>
+					</div>
+					<div class="input-group">
+						<input id='msg_input' type="text" class="form-control" placeholder="type your message here.."
+							aria-label="Recipient's username with two button addons" aria-describedby="button-addon4">
+						<form class="input-group-append" id="button-addon4" enctype=multipart/form-data>
+							<button id='send' class="btn btn-outline-secondary" type="button">send</button>
+							<input id='upload' class="btn btn-outline-secondary" type="file">upload file</button>
+						</form>
+					</div>
+				</div>
+			</div>
+	<script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
