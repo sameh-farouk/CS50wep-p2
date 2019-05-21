@@ -27,6 +27,8 @@ active_users = {}
 # and the value is list of dictionarys( every dictionary contain a message and the sender name). 
 history = {}
 
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 @app.route("/")
 def index():
 	return render_template('index.html')
