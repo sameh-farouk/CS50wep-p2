@@ -6,9 +6,9 @@ Chit-Chat is online messaging service built with flask and javascript.
 the project folder contain this files and folders:
 
   static
-    \index.js       
+    /index.js       
   templates
-    index.html      
+    /index.html      
   uploads
   /application.py
   /REAME.md
