@@ -42,12 +42,14 @@ how i implement the requirements:
     1-when user send a message, the server store it in memory in the data-container mentioned before. if the count reach 100 we pop left a message before we store the new message. 
     
   sending message associated with the sender display name and the timestamp:
-    0-the server will receive the message from a sender
-    1-the server will add the sender info before passing the message as sender info are stored in the session.
-    2-client will receive the message, add the local time to message and display it to the user.
+    0-the client will send the message alongside sender name and timestamp derived from Unix time, which is a value consisting of the number of milliseconds that have passed since midnight on January 1st, 1970.
+    1-the server will pass it to other clients.
+    2-clients will receive the message object, and Retrieving message and sender info and  convert the timestamp associated with the message to local time and string format for display to users.
+
   remembering the channel the user was on previously:
+    the last channel user was on are stored in the user session on server-side's file-system.
 
   the personal touch:
-    user can send txt, pdf, png, jpg, jpeg, gif files to others
-    there is a status animated icon, light green when connected or yellow when there are connections issues.
-    also online users counter. display to user when he loged in.
+    - user can send txt, pdf, png, jpg, jpeg, gif files to others
+    - there is a status animated icon, light green when connected or yellow when there are connections issues.
+    - also online users counter. display to user when he loged in.
