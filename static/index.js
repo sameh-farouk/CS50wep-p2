@@ -14,12 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let $cards = document.querySelector('#cards')
   let $createRoom = document.querySelector('#create_room')
 
-  const now = function () {
-    let today = new Date();
+  const now = function (timestamp=null) {
+    let today;
+    if (timestamp) {
+      today = new Date(timestamp);
+    } else {
+      today = new Date();
+    }
     let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let dateTime = date + ' ' + time;
     return dateTime;
+  }
+  
+  const GetCurrentTimestamp = function () {
+    let n = new Date();
+    return n.getTime();
   }
 
   let userName = null;
@@ -36,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function send(msg) {
     if (logedIn) {
-      socket.send({ message: msg, sender: userName });
+      socket.send({ message: msg, sender: userName, timestamp: GetCurrentTimestamp()});
     }
   }
 
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function add_message(msg) {
     let li = document.createElement('li');
     let p = document.createElement('p');
-    p.innerHTML = `<small>${now()}</small> <strong>${msg.sender}</strong> : ${msg.message}`;
+    p.innerHTML = `<small>${now(msg.timestamp)}</small> <strong>${msg.sender}</strong> : ${msg.message}`;
     if (msg.file) {
       let a = document.createElement('a');
       a.setAttribute('href', msg.file)
