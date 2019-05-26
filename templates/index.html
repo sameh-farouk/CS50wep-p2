@@ -12,47 +12,69 @@
 </head>
 
 <body>
-		<div id='login_page' style='display: none;'>
+	<div id='login_page' class="container" style='display: none; height:100%;'>
+		<div style="text-align: center; vertical-align: middle; padding: 10% ">
 			<div>
-				<h3>What is Your Name?</h3>
-				<input id='name_input' type="text" maxlength="14">
+				<label class="sr-only" for="name_input">Display Name</label>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">@</div>
+					</div>
+					<input type="text" class="form-control" id="name_input" placeholder="Display Name">
+				</div>
 			</div>
 		</div>
-		<div id='chat_page' style='display: none;'>
+	</div>
+	<div id='chat_page' style='display: none;'>
 
-				<div class="jumbotron">
-					<h5 class="display-5">Hello, <span id="display_name"></span> !</h5>
-					<p class="lead">
-						<spna style="color:red">Chit-chat</spna> is online messaging service built with flask and
-						javascript.
-					</p>
-					<hr class="my-4">
-					<p>you can create channels(i.e. chatrooms) to communicates in.</p>
-					<a id="create_room" class="btn btn-success btn-lg" role="button">Create new channel</a>
-					<hr class="my-4">
-					<div id="cards" class="card-columns">
-					</div>
-					<hr class="my-4">
+		<div class="jumbotron">
+			<h5 class="display-5">Hello, <span id="display_name"></span> !</h5>
+			<p class="lead">
+				<spna style="color:red;">Chit-chat</spna> is online messaging service built with flask and
+				javascript.
+			</p>
+			<hr class="my-4">
+			<p>you can create channels(i.e. chatrooms) to communicates in.</p>
+			<a id="create_room" class="btn btn-success btn-lg" role="button">Create new channel</a>
+			<hr class="my-4">
+			<p class="lead">you can join any of this Channels</p>
+			<div id="cards" class="card-columns">
+			</div>
+			<hr class="my-4">
 
-					<div style="overflow-y: scroll; height:200px; border:1px solid black;">
-						<div class="container">
-							<h4 id="room_name">Channel Name</h4>
-							<div id="status" class="spinner-grow text-warning" role="status">
-								<span class="sr-only">Loading...</span>
-							</div>
-							<ul id='msg_Box'></ul>
+
+
+			<div class="card text-center">
+				<div id="room_name" class="card-header">
+					Channel Name
+				</div>
+				<div class="card-body" style="overflow-y: scroll; height:300px;">
+					<ul id='msg_Box' class="list-group list-group-flush" style='list-style: none;'></ul>
+				</div>
+
+				<div class="input-group">
+					<input id="msg_input" type="text" class="form-control" aria-label="type your message here..">
+					<div class="input-group-append">
+						<button id='send' type="button" class="btn btn-outline-secondary" disabled>Send</button>
+						<button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="sr-only">Toggle Dropdown</span>
+						</button>
+						<div class="dropdown-menu">
+							<input type="file" id='upload' class="dropdown-item" placeholder="Upload" disabled>
+
 						</div>
-					</div>
-					<div class="input-group">
-						<input id='msg_input' type="text" class="form-control" placeholder="type your message here.."
-							aria-label="Recipient's username with two button addons" aria-describedby="button-addon4">
-						<form class="input-group-append" id="button-addon4" enctype=multipart/form-data>
-							<button id='send' class="btn btn-outline-secondary" type="button">send</button>
-							<input id='upload' class="btn btn-outline-secondary" type="file">upload file</button>
-						</form>
 					</div>
 				</div>
 			</div>
+
+
+
+
+
+
+		</div>
+	</div>
 	<script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"

@@ -89,7 +89,7 @@ def remove_user():
 	if session.sid in active_users:
 		# remove loged in user from online users
 		active_users.pop(session.sid, None)
-		print(session['user'] + 'has disconnected. now users are' + str(len(active_users)))
+		print(session['user'] + ' has disconnected. now users are ' + str(len(active_users)))
 	else:
 		# user did not loged in properly yet. so he did not exesit in online users list. no further action required
 		print('no need to remove this client from active users list becouse he did not loged in yet')
@@ -145,7 +145,7 @@ def switch_room(room=None):
 		last100msg = list(history[session['current_room']])
 	else:
 		last100msg = []
-	emit('joined a room', {'current_room': room, 'last100msg': last100msg})
+	emit('joined a room', {'current_room': room, 'last100msg': last100msg, 'user': session['user']})
 
 
 @socketio.on('upload')

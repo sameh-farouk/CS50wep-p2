@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let $cards = document.querySelector('#cards')
   let $createRoom = document.querySelector('#create_room')
 
+
   const now = function (timestamp=null) {
     let today;
     if (timestamp) {
@@ -61,8 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function add_message(msg) {
     let li = document.createElement('li');
-    let p = document.createElement('p');
-    p.innerHTML = `<small>${now(msg.timestamp)}</small> <strong>${msg.sender}</strong> : ${msg.message}`;
+    li.classList.add('list-group-item')
+    let p = document.createElement('div');
+    p.innerHTML = `<strong>${msg.sender}</strong> : ${msg.message}<br><small>${now(msg.timestamp)}</small> `;
+   
+    
     if (msg.file) {
       let a = document.createElement('a');
       a.setAttribute('href', msg.file)
@@ -73,7 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     li.appendChild(p)
     if (msg.sender !== userName) {
-      li.style = 'color: blue;'
+      li.style = 'color: blue; text-align: right;'
+    }
+    else {
+      li.style = 'text-align: left;'
     }
     $msgBox.insertBefore(li, $msgBox.firstChild);
   }
@@ -82,8 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function refresh_rooms(current = currentRoom, rooms) {
     $cards.innerHTML = '';
     for (room in rooms) {
-      const button = document.createElement('button');
-      button.innerHTML = `<strong>${rooms[room]}</strong>`
+      const button = document.createElement('div');
+      button.innerHTML = `<div class="card bg-primary text-white text-center p-3">
+      <blockquote class="blockquote mb-0">
+        <p>${rooms[room]}</p>
+      </blockquote>`
+    
       button.dataset.room = rooms[room]
       button.classList.add('room_button')
       if (rooms[room] == current) {
@@ -111,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       socket.emit('upload', { 'name': name, 'data': evnt.target.result, 'size': selectedFile.size, 'type': selectedFile.type });
     }
     FReader.readAsArrayBuffer(selectedFile);
+    $uploadInput.value=''
   }
 
 
@@ -174,9 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
     userName = data.name;
     logedIn = true;
     $displayName.textContent = userName
-    document.querySelector('#status').classList.replace('text-warning', 'text-success');
-    refresh_rooms(data.current_room, data.rooms);
     notify_user(`You've been logged in successfully, active users : ${data.active_users}`);
+    refresh_rooms(data.current_room, data.rooms);
+    $sendButton.disabled = false;
+    $uploadInput.disabled = false;
   });
 
 
@@ -189,10 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     $msgBox.innerHTML = ''
     notify_user(`you are now in ${room.current_room} room`)
+    userName=room.user;
     room.last100msg.forEach(msg => {
       add_message(msg)
     });
-    notify_user('all messages below have already been sent before you join this room now.')
   });
 
 
@@ -210,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logedIn) {
       notify_user("You've been disconnected because " + reason + " !");
       logedIn = false
-      document.querySelector('#status').classList.replace('text-success', 'text-warning');
-
+      $sendButton.disabled = true;
+      $uploadInput.disabled = true;
     }
     console.log('you have been disconnected because ' + reason);
   });
