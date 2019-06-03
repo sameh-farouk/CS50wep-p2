@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function notify_user(msg) {
     const li = document.createElement('li');
-    li.innerHTML = `<small>${now()}</small>  ${msg}`
+    li.innerHTML = `${msg}<br><small>${now()}</small>`
     li.style = 'color: goldenrod;'
     $msgBox.insertBefore(li, $msgBox.firstChild);
   }
