@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let name = selectedFile.name
     FReader = new FileReader();
     FReader.onload = function (evnt) {
-      socket.emit('upload', { 'name': name, 'data': evnt.target.result, 'size': selectedFile.size, 'type': selectedFile.type });
+      socket.emit('upload', { 'name': name, 'data': evnt.target.result, 'size': selectedFile.size, 'type': selectedFile.type, 'timestamp': GetCurrentTimestamp() });
     }
     FReader.readAsArrayBuffer(selectedFile);
     $uploadInput.value=''
